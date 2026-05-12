@@ -202,17 +202,32 @@
         position: absolute;
         bottom: 70px;
         left: 50%;
-        transform: translateX(-50%);
-        width: 240px;
-        max-width: 90%;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.88);
-        backdrop-filter: blur(6px);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        transform: translateX(-58%);
+
+        width: 260px;
+        max-width: 85%;
+
+        padding: 10px 14px;
+        border-radius: 16px;
+
+        /* BACKGROUND LEBIH TRANSPARAN */
+        background: rgba(255, 255, 255, 0.45);
+
+        /* efek blur glass */
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+
+        /* border tipis elegan */
+        border: 1px solid rgba(255, 255, 255, 0.35);
+
+        /* shadow lebih soft */
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+
         font-size: 12px;
         z-index: 1001;
         color: #111;
+
+        transition: 0.2s ease;
       }
 
       .legend-title {
@@ -231,7 +246,6 @@
         display: flex;
         justify-content: space-between;
         margin-top: 6px;
-
         font-size: 11px;
         font-weight: 500;
       }
@@ -268,84 +282,146 @@
         right: 10px;
       }
 
-      /* =========================
-   MOBILE FIX
-========================= */
       @media (max-width: 768px) {
         /* NAVBAR */
         .navbar {
-          padding: 8px 12px;
+          padding: 8px 10px;
         }
 
         .navbar-brand {
-          font-size: 14px;
-          gap: 8px !important;
+          font-size: 13px;
+          gap: 6px !important;
+          max-width: 85vw;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .navbar-brand img {
-          height: 24px !important;
+          height: 26px !important;
         }
 
-        /* SEARCH */
+        /* SEARCH BOX */
         #searchBox {
-          top: 65px;
+          position: absolute;
+
+          top: 78px;
           left: 10px;
-          width: calc(100% - 80px);
-          max-width: unset;
+          right: 62px;
+
+          width: auto;
+          max-width: none;
+
+          display: flex;
+          align-items: center;
+
+          padding: 4px;
+
+          border-radius: 12px;
+
+          z-index: 1005;
         }
 
         #searchInput {
+          flex: 1;
           width: 100%;
+          min-width: 0;
+
           font-size: 12px;
-          padding: 7px 8px;
+          padding: 8px 10px;
         }
 
         #searchBtn {
-          padding: 6px 10px;
+          flex-shrink: 0;
+
+          padding: 8px 10px;
+
+          border-radius: 10px;
         }
 
         /* MENU BUTTON */
         #menuBtn {
-          top: 65px;
+          top: 78px;
           right: 10px;
-          padding: 7px 10px;
-          font-size: 14px;
+
+          width: 42px;
+          height: 42px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          padding: 0;
+
+          font-size: 18px;
+
+          border-radius: 10px;
         }
 
         /* PANEL */
         .panel {
-          top: 110px;
+          top: 128px;
           right: 10px;
+
           width: calc(100% - 20px);
+
           max-height: 65vh;
-          overflow-y: auto;
-          padding: 12px;
+
           border-radius: 12px;
         }
 
-        /* LEGEND */
+        /* LEGENDA MOBILE FIX */
         .legend {
-          width: 75%;
-          bottom: 20px;
+          position: absolute;
+          bottom: 42px;
+          left: 50%;
+          transform: translateX(-58%);
+          width: 230px !important;
+          max-width: 75vw;
           padding: 8px 10px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.45);
+          backdrop-filter: blur(6px);
           font-size: 10px;
+          z-index: 1001;
         }
 
         .legend-title {
           font-size: 10px;
-          margin-bottom: 6px;
+          margin-bottom: 5px;
         }
 
         .legend-gradient {
-          height: 8px;
+          height: 7px;
         }
 
         .legend-labels {
-          font-size: 9px;
+          font-size: 8px;
         }
 
         .legend-note {
-          font-size: 8px;
+          font-size: 7px;
+        }
+
+        /* SCALE BAR */
+        .maplibregl-ctrl-bottom-right {
+          bottom: 12px;
+          right: 10px;
+        }
+
+        .maplibregl-ctrl-scale {
+          font-size: 9px !important;
+          padding: 2px 6px !important;
+        }
+
+        /* CONTROL */
+        .maplibregl-ctrl-top-left {
+          margin-top: 130px;
+        }
+
+        .maplibregl-ctrl-group {
+          transform: scale(0.9);
+          transform-origin: top left;
         }
 
         /* KOORDINAT */
@@ -353,25 +429,15 @@
           display: none;
         }
 
-        /* CONTROL MAP */
-        .maplibregl-ctrl-top-left {
-          margin-top: 120px;
-        }
-
-        .maplibregl-ctrl-group {
-          transform: scale(0.9);
-        }
-
         /* MEASURE */
         .measure-btn {
-          bottom: 90px;
+          bottom: 120px;
           left: 10px;
-          padding: 7px;
         }
 
         /* POPUP */
         .maplibregl-popup-content {
-          max-width: 260px;
+          max-width: 250px;
         }
       }
 
@@ -380,10 +446,8 @@
         top: 70px;
         left: 10px;
         z-index: 1005;
-
         display: flex;
         align-items: center;
-
         background: rgba(255, 255, 255, 0.9);
         border-radius: 12px;
         padding: 4px;
@@ -1785,7 +1849,7 @@
         bringDesaToFront();
 
         if (map.getLayer("desa-label")) {
-          map.setLayoutProperty("desa-label", "visibility");
+          map.setLayoutProperty("desa-label", "visibility", "visible");
         }
       }
 
