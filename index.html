@@ -193,6 +193,1950 @@
       }
 
       /* LEGEND FIX */
+      .legend {
+        position: absolute;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        width: 240px;
+        max-width: 90%;
+
+        padding: 10px 12px;
+        border-radius: 12px;
+
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(6px);
+
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+
+        font-size: 12px;
+        z-index: 1001;
+
+        color: #111;
+      }
+
+      .legend-title {
+        font-weight: 700;
+        font-size: 12px;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .legend-gradient {
+        height: 10px;
+        border-radius: 10px;
+      }
+
+      .legend-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .legend-note {
+        margin-top: 6px;
+        font-size: 10px;
+        text-align: center;
+        color: #444;
+      }
+      .legend:hover {
+        transform: translateX(-50%) scale(1.02);
+        transition: 0.2s;
+      }
+
+      /* KOORD */
+      #coord {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.85);
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 1002;
+      }
+
+      /* CONTROL FIX */
+      .maplibregl-ctrl-top-left {
+        margin-top: 90px;
+      }
+      .maplibregl-ctrl-bottom-right {
+        bottom: 10px;
+        right: 10px;
+      }
+
+      /* MOBILE */
+      @media (max-width: 768px) {
+        .legend {
+          width: 180px;
+          bottom: 70px;
+          padding: 8px 10px;
+          font-size: 10px;
+        }
+
+        .legend-title {
+          font-size: 10px;
+          margin-bottom: 6px;
+        }
+
+        .legend-gradient {
+          height: 8px;
+        }
+
+        .legend-labels {
+          font-size: 9px;
+        }
+
+        .legend-note {
+          font-size: 8px;
+        }
+        .panel {
+          width: 90%;
+          right: 5%;
+        }
+        .legend {
+          width: 85%;
+        }
+      }
+      .navbar-brand img {
+        height: 32px;
+      }
+
+      @media (max-width: 768px) {
+        .panel {
+          top: 70px;
+          right: 10px;
+
+          width: calc(100% - 20px);
+
+          max-height: 65vh;
+
+          overflow-y: auto;
+
+          padding-bottom: 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        #coord {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar-brand img {
+          height: 24px;
+        }
+      }
+
+      #searchBox {
+        position: absolute;
+        top: 70px;
+        left: 10px;
+        z-index: 1005;
+
+        display: flex;
+        align-items: center;
+
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      #searchInput {
+        border: none;
+        outline: none;
+        padding: 8px 10px;
+        border-radius: 10px;
+        width: 180px;
+        font-size: 13px;
+        background: transparent;
+      }
+
+      #searchInput::placeholder {
+        color: #888;
+      }
+
+      #searchBtn {
+        border: none;
+        background: #e0e0e0; /* abu-abu */
+        color: #333;
+        padding: 6px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      /* hover effect */
+      #searchBtn:hover {
+        background: #d5d5d5;
+      }
+
+      /* klik effect */
+      #searchBtn:active {
+        transform: scale(0.95);
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #f57c00">
+      <div class="container-fluid">
+        <span class="navbar-brand text-white d-flex align-items-center gap-2">
+          <img src="images/bpbd_barsel.png" alt="BPBD" style="height: 40px" />
+          <b>Geospasial Siap Cegah</b></span
+        >
+      </div>
+    </nav>
+
+    <div id="map"></div>
+    <div id="menuBtn" onclick="toggleMenu()">☰</div>
+    <div class="measure-btn" onclick="toggleMeasure()">
+      <i class="fa-solid fa-ruler"></i>
+    </div>
+
+    <div id="searchBox">
+      <input id="searchInput" type="text" placeholder="Cari desa / lokasi..." />
+      <button id="searchBtn" onclick="doSearch()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </div>
+
+    <div class="panel" id="layerPanel">
+      <div class="section-title" onclick="toggleSection('desaSection')">
+        <i class="fa-solid fa-plus"></i> Batas Administrasi
+      </div>
+
+      <div class="section-content" id="desaSection">
+        <input type="checkbox" checked onchange="toggleDesa(this.checked)" />
+        Batas Desa/Kelurahan<br />
+      </div>
+      <div class="section-title" onclick="toggleSection('basemapSection')">
+        <i class="fa-solid fa-plus"></i> Basemap<br />
+      </div>
+      <div class="section-content" id="basemapSection">
+        <input
+          type="radio"
+          name="basemap"
+          onclick="setBasemap('basemap_osm')"
+          checked
+        />
+        OSM<br />
+        <input
+          type="radio"
+          name="basemap"
+          onclick="setBasemap('basemap_satellite')"
+        />
+        Satelit<br />
+        <input
+          type="radio"
+          name="basemap"
+          onclick="setBasemap('basemap_terrain')"
+        />
+        Terrain<br />
+        <input
+          type="radio"
+          name="basemap"
+          onclick="setBasemap('basemap_roads')"
+        />
+        Road<br />
+      </div>
+
+      <div class="section-title" onclick="toggleSection('bahayaSection')">
+        <i class="fa-solid fa-plus"></i> Bahaya
+      </div>
+      <div class="section-content" id="bahayaSection">
+        <input type="radio" name="layer" onclick="setLayer('bahaya_banjir')" />
+        Banjir<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_banjir_bandang')"
+        />
+        Banjir Bandang<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_cuaca_ekstrem')"
+        />
+        Cuaca Ekstrem<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_gempabumi')"
+        />
+        Gempabumi<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_kebakaran_hutan_dan_lahan')"
+        />
+        Kebakaran Hutan dan Lahan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_kekeringan')"
+        />
+        Kekeringan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_tanah_longsor')"
+        />
+        Tanah Longsor<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('bahaya_kegagalan_teknologi')"
+        />
+        Kegagalan Teknologi<br /><br />
+      </div>
+
+      <div class="section-title" onclick="toggleSection('kerentananSection')">
+        <i class="fa-solid fa-plus"></i> Kerentanan
+      </div>
+      <div class="section-content" id="kerentananSection">
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_banjir')"
+        />
+        Banjir<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_banjir_bandang')"
+        />
+        Banjir Bandang<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_cuaca_ekstrem')"
+        />
+        Cuaca Ekstrem<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_gempabumi')"
+        />
+        Gempabumi<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_kebakaran_hutan_dan_lahan')"
+        />
+        Kebakaran Hutan dan Lahan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_kekeringan')"
+        />
+        Kekeringan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_tanah_longsor')"
+        />
+        Tanah Longsor<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kerentanan_kegagalan_teknologi')"
+        />
+        Kegagalan Teknologi<br /><br />
+      </div>
+
+      <div class="section-title" onclick="toggleSection('kapasitasSection')">
+        <i class="fa-solid fa-plus"></i> Kapasitas
+      </div>
+      <div class="section-content" id="kapasitasSection">
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_banjir')"
+        />
+        Banjir<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_banjir_bandang')"
+        />
+        Banjir Bandang<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_cuaca_ekstrem')"
+        />
+        Cuaca Ekstrem<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_gempabumi')"
+        />
+        Gempabumi<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_kebakaran_hutan_dan_lahan')"
+        />
+        Kebakaran Hutan dan Lahan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_kekeringan')"
+        />
+        Kekeringan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_tanah_longsor')"
+        />
+        Tanah Longsor<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('kapasitas_kegagalan_teknologi')"
+        />
+        Kegagalan Teknologi<br />
+      </div>
+
+      <div class="section-title" onclick="toggleSection('risikoSection')">
+        <i class="fa-solid fa-plus"></i> Risiko
+      </div>
+      <div class="section-content" id="risikoSection">
+        <input type="radio" name="layer" onclick="setLayer('risiko_banjir')" />
+        Banjir<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_banjir_bandang')"
+        />
+        Banjir Bandang<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_cuaca_ekstrem')"
+        />
+        Cuaca Ekstrem<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_gempabumi')"
+        />
+        Gempabumi<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_kebakaran_hutan_dan_lahan')"
+        />
+        Kebakaran Hutan dan Lahan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_kekeringan')"
+        />
+        Kekeringan<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_tanah_longsor')"
+        />
+        Tanah Longsor<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_kegagalan_teknologi')"
+        />
+        Kegagalan Teknologi<br />
+        <input
+          type="radio"
+          name="layer"
+          onclick="setLayer('risiko_multibahaya')"
+        />
+        Multibahaya<br /><br />
+      </div>
+    </div>
+
+    <div class="legend" id="legendBox"></div>
+    <div id="coord">Koordinat: - , -</div>
+
+    <script>
+      // =====================
+      // TOGGLE DESA LAYER
+      // =====================
+      function toggleDesa(visible) {
+        const visibility = visible ? "visible" : "none";
+
+        if (!map || !map.isStyleLoaded()) return;
+
+        if (map.getLayer("desa-fill")) {
+          map.setLayoutProperty("desa-fill", "visibility", visibility);
+        }
+
+        if (map.getLayer("desa-line")) {
+          map.setLayoutProperty("desa-line", "visibility", visibility);
+        }
+      }
+
+      // =====================
+      // SEARCH FUNCTION
+      // =====================
+      async function doSearch() {
+        const query = document.getElementById("searchInput").value;
+        if (!query) return;
+
+        const url =
+          "https://nominatim.openstreetmap.org/search?format=json&q=" +
+          encodeURIComponent(query);
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.length === 0) {
+          alert("Lokasi tidak ditemukan");
+          return;
+        }
+
+        const first = data[0];
+
+        map.flyTo({
+          center: [first.lon, first.lat],
+          zoom: 14,
+          essential: true,
+        });
+
+        new maplibregl.Popup()
+          .setLngLat([first.lon, first.lat])
+          .setHTML(`<b>${first.display_name}</b>`)
+          .addTo(map);
+      }
+
+      // ACCORDION FIX
+      function toggleSection(id) {
+        document.getElementById(id).style.display =
+          document.getElementById(id).style.display === "block"
+            ? "none"
+            : "block";
+      }
+      window.onload = () => {
+        const isMobile = window.innerWidth <= 768;
+
+        const sections = [
+          "basemapSection",
+          "bahayaSection",
+          "kerentananSection",
+          "kapasitasSection",
+          "risikoSection",
+        ];
+
+        sections.forEach((id) => {
+          const el = document.getElementById(id);
+
+          if (!el) return;
+
+          // Desktop buka semua
+          if (!isMobile) {
+            el.style.display = "block";
+          }
+
+          // Mobile tutup semua dulu
+          else {
+            el.style.display = "none";
+          }
+        });
+      };
+
+      // PMTiles
+      const protocol = new pmtiles.Protocol();
+      maplibregl.addProtocol("pmtiles", protocol.tile);
+
+      // =====================
+      // DISASTER HELPER
+      // =====================
+
+      const disasterFieldMap = {
+        banjir: "banjir",
+        banjir_bandang: "bjrbndan",
+        cuaca_ekstrem: "cueks",
+        gempabumi: "gempa",
+        kebakaran_hutan_dan_lahan: "karhutla",
+        kekeringan: "drought",
+        tanah_longsor: "longsor",
+        kegagalan_teknologi: "galtek",
+      };
+
+      function getDisasterFromLayer(layerId) {
+        if (!layerId) return null;
+        return layerId.split("_").slice(1).join("_");
+      }
+
+      function buildLayerMap(disaster) {
+        if (!disaster) return null;
+
+        return {
+          bahaya: `bahaya_${disaster}`,
+          kerentanan: `kerentanan_${disaster}`,
+          kapasitas: `kapasitas_${disaster}`,
+          risiko: `risiko_${disaster}`,
+        };
+      }
+
+      function buildFields(disaster) {
+        const key = disasterFieldMap[disaster];
+
+        if (!key) return null;
+
+        return {
+          H: `H_${key}`,
+          V: `V_${key}`,
+          C: `C_${key}`,
+          R: `R_${key}`,
+        };
+      }
+
+      function prettyText(text) {
+        if (!text) return "-";
+        return text
+          .replaceAll("_", " ")
+          .replace(/\b\w/g, (l) => l.toUpperCase());
+      }
+
+      //Basemap
+      function setBasemap(active) {
+        const basemaps = [
+          "basemap_osm",
+          "basemap_satellite",
+          "basemap_terrain",
+          "basemap_roads",
+        ];
+
+        basemaps.forEach((b) => {
+          if (map.getLayer(b)) {
+            map.setLayoutProperty(
+              b,
+              "visibility",
+              b === active ? "visible" : "none",
+            );
+          }
+        });
+      }
+
+      // =====================
+      // APP STATE
+      // =====================
+      let activeLayer = "bahaya_banjir";
+      let activeDisaster = "banjir";
+      let activeCategory = "bahaya";
+
+      // MAP
+      const map = new maplibregl.Map({
+        container: "map",
+        style: {
+          version: 8,
+          glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+          sources: {
+            desa: {
+              type: "geojson",
+              data: "data/Admin_Desa_new.geojson",
+              generateId: true,
+            },
+            basemap_osm: {
+              type: "raster",
+              tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            },
+            basemap_satellite: {
+              type: "raster",
+              tiles: [
+                "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+              ],
+            },
+            basemap_terrain: {
+              type: "raster",
+              tiles: [
+                "https://services.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}",
+              ],
+            },
+            basemap_roads: {
+              type: "raster",
+              tiles: [
+                "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",
+              ],
+            },
+
+            bahaya_banjir: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_Banjir.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_banjir_bandang: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_BanjirBandang.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_cuaca_ekstrem: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_CuacaEkstrem.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_gempabumi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_Gempabumi.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_kebakaran_hutan_dan_lahan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_Karhutla.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_kekeringan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_Kekeringan.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_tanah_longsor: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_TanahLongsor.pmtiles",
+              tileSize: 256,
+            },
+            bahaya_kegagalan_teknologi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Bahaya_Galtek.pmtiles",
+              tileSize: 256,
+            },
+
+            kerentanan_banjir: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_Banjir.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_banjir_bandang: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_BanjirBandang.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_cuaca_ekstrem: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_CuacaEkstrem.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_gempabumi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_Gempabumi.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_kebakaran_hutan_dan_lahan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_Karhutla.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_kekeringan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_Kekeringan.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_tanah_longsor: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kerentanan_TanahLongsor.pmtiles",
+              tileSize: 256,
+            },
+            kerentanan_kegagalan_teknologi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_kerentanan_Galtek.pmtiles",
+              tileSize: 256,
+            },
+
+            kapasitas_banjir: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_Banjir.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_banjir_bandang: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_BanjirBandang.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_cuaca_ekstrem: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_CuacaEkstrem.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_gempabumi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_Gempabumi.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_kebakaran_hutan_dan_lahan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_Karhutla.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_kekeringan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_Kekeringan.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_tanah_longsor: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_TanahLongsor.pmtiles",
+              tileSize: 256,
+            },
+            kapasitas_kegagalan_teknologi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Kapasitas_Galtek.pmtiles",
+              tileSize: 256,
+            },
+
+            risiko_banjir: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Banjir.pmtiles",
+              tileSize: 256,
+            },
+            risiko_banjir_bandang: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_BanjirBandang.pmtiles",
+              tileSize: 256,
+            },
+            risiko_cuaca_ekstrem: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_CuacaEkstrem.pmtiles",
+              tileSize: 256,
+            },
+            risiko_gempabumi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Gempabumi.pmtiles",
+              tileSize: 256,
+            },
+            risiko_kebakaran_hutan_dan_lahan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Karhutla.pmtiles",
+              tileSize: 256,
+            },
+            risiko_kekeringan: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Kekeringan.pmtiles",
+              tileSize: 256,
+            },
+            risiko_tanah_longsor: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Longsor.pmtiles",
+              tileSize: 256,
+            },
+            risiko_kegagalan_teknologi: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Galtek.pmtiles",
+              tileSize: 256,
+            },
+            risiko_multibahaya: {
+              type: "raster",
+              url: "pmtiles://data/Indeks_Risiko_Multibahaya.pmtiles",
+              tileSize: 256,
+            },
+          },
+          layers: [
+            { id: "basemap_osm", type: "raster", source: "basemap_osm" },
+            {
+              id: "basemap_satellite",
+              type: "raster",
+              source: "basemap_satellite",
+              layout: { visibility: "none" },
+            },
+            {
+              id: "basemap_terrain",
+              type: "raster",
+              source: "basemap_terrain",
+              layout: { visibility: "none" },
+            },
+            {
+              id: "basemap_roads",
+              type: "raster",
+              source: "basemap_roads",
+              layout: { visibility: "none" },
+            },
+            {
+              id: "bahaya_banjir",
+              type: "raster",
+              source: "bahaya_banjir",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_banjir_bandang",
+              type: "raster",
+              source: "bahaya_banjir_bandang",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_cuaca_ekstrem",
+              type: "raster",
+              source: "bahaya_cuaca_ekstrem",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_gempabumi",
+              type: "raster",
+              source: "bahaya_gempabumi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_kebakaran_hutan_dan_lahan",
+              type: "raster",
+              source: "bahaya_kebakaran_hutan_dan_lahan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_kekeringan",
+              type: "raster",
+              source: "bahaya_kekeringan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_tanah_longsor",
+              type: "raster",
+              source: "bahaya_tanah_longsor",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "bahaya_kegagalan_teknologi",
+              type: "raster",
+              source: "bahaya_kegagalan_teknologi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+
+            {
+              id: "kerentanan_banjir",
+              type: "raster",
+              source: "kerentanan_banjir",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_banjir_bandang",
+              type: "raster",
+              source: "kerentanan_banjir_bandang",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_cuaca_ekstrem",
+              type: "raster",
+              source: "kerentanan_cuaca_ekstrem",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_gempabumi",
+              type: "raster",
+              source: "kerentanan_gempabumi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_kebakaran_hutan_dan_lahan",
+              type: "raster",
+              source: "kerentanan_kebakaran_hutan_dan_lahan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_kekeringan",
+              type: "raster",
+              source: "kerentanan_kekeringan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_tanah_longsor",
+              type: "raster",
+              source: "kerentanan_tanah_longsor",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kerentanan_kegagalan_teknologi",
+              type: "raster",
+              source: "kerentanan_kegagalan_teknologi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+
+            {
+              id: "kapasitas_banjir",
+              type: "raster",
+              source: "kapasitas_banjir",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_banjir_bandang",
+              type: "raster",
+              source: "kapasitas_banjir_bandang",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_cuaca_ekstrem",
+              type: "raster",
+              source: "kapasitas_cuaca_ekstrem",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_gempabumi",
+              type: "raster",
+              source: "kapasitas_gempabumi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_kebakaran_hutan_dan_lahan",
+              type: "raster",
+              source: "kapasitas_kebakaran_hutan_dan_lahan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_kekeringan",
+              type: "raster",
+              source: "kapasitas_kekeringan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_tanah_longsor",
+              type: "raster",
+              source: "kapasitas_tanah_longsor",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "kapasitas_kegagalan_teknologi",
+              type: "raster",
+              source: "kapasitas_kegagalan_teknologi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+
+            {
+              id: "risiko_banjir",
+              type: "raster",
+              source: "risiko_banjir",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_banjir_bandang",
+              type: "raster",
+              source: "risiko_banjir_bandang",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_cuaca_ekstrem",
+              type: "raster",
+              source: "risiko_cuaca_ekstrem",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_gempabumi",
+              type: "raster",
+              source: "risiko_gempabumi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_kebakaran_hutan_dan_lahan",
+              type: "raster",
+              source: "risiko_kebakaran_hutan_dan_lahan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_kekeringan",
+              type: "raster",
+              source: "risiko_kekeringan",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_tanah_longsor",
+              type: "raster",
+              source: "risiko_tanah_longsor",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_kegagalan_teknologi",
+              type: "raster",
+              source: "risiko_kegagalan_teknologi",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+            {
+              id: "risiko_multibahaya",
+              type: "raster",
+              source: "risiko_multibahaya",
+              layout: { visibility: "none" },
+              paint: { "raster-opacity": 0.6 },
+            },
+          ],
+        },
+        center: [114.8685797, -1.7214317],
+        zoom: 8,
+      });
+      map.getCanvas().style.cursor = "default";
+
+      map.doubleClickZoom.disable();
+
+      map.on("load", () => {
+        // CONTROL
+        map.addControl(new maplibregl.NavigationControl(), "top-left");
+        map.addControl(
+          new maplibregl.ScaleControl({ unit: "metric" }),
+          "bottom-right",
+        );
+        map.addControl(
+          new maplibregl.GeolocateControl({ trackUserLocation: true }),
+          "top-left",
+        );
+        console.log("Map ready");
+
+        // FIT BOUNDS
+        map.fitBounds(
+          [
+            [114.5, -2.3],
+            [115.5, -1.2],
+          ],
+          {
+            padding: 40,
+            duration: 1000,
+          },
+        );
+
+        map.once("moveend", () => {
+          map.zoomTo(map.getZoom() - 0.5);
+        });
+        toggleDesa(true);
+
+        // =====================
+        // DEBUG SOURCE
+        // =====================
+        map.on("sourcedata", (e) => {
+          if (e.sourceId === "desa") {
+            console.log("GeoJSON desa loaded");
+          }
+        });
+
+        // =====================
+        // LAYER DESA (PASTI DI ATAS)
+        // =====================
+        map.addLayer({
+          id: "desa-fill",
+          type: "fill",
+          source: "desa",
+          paint: {
+            "fill-color": "#ffffff",
+            "fill-opacity": 0.1,
+          },
+        });
+
+        map.addLayer({
+          id: "desa-line",
+          type: "line",
+          source: "desa",
+          paint: {
+            "line-color": "#000000",
+            "line-dasharray": [6, 2, 1, 2, 1, 2, 1, 2],
+            "line-width": 1.2,
+          },
+        });
+
+        map.addLayer({
+          id: "desa-label",
+          type: "symbol",
+          source: "desa",
+          minzoom: 6,
+
+          layout: {
+            "text-field": ["get", "WADMKD"],
+
+            "text-size": ["interpolate", ["linear"], ["zoom"], 6, 8, 12, 14],
+
+            // 🔥 SMART DECLUTTER
+            "text-allow-overlap": false,
+            "text-ignore-placement": false,
+
+            // 🔥 PRIORITAS UTAMA (DESA BESAR LEBIH DIDAHULUKAN)
+            "symbol-sort-key": ["get", "LUAS"],
+
+            "text-variable-anchor": ["top", "bottom", "left", "right"],
+            "text-radial-offset": 0.5,
+            "text-padding": 2,
+            "text-keep-upright": true,
+
+            // optional biar tidak terlalu penuh
+            "text-optional": true,
+          },
+
+          paint: {
+            "text-color": "#111",
+            "text-halo-color": "#ffffff",
+            "text-halo-width": 1.8,
+          },
+        });
+
+        // hover fill HARUS di atas fill biasa
+        map.addLayer({
+          id: "desa-hover-fill",
+          type: "fill",
+          source: "desa",
+          paint: {
+            "fill-color": "#ffff00",
+            "fill-opacity": 0.2,
+          },
+          filter: ["==", ["get", "NAMOBJ"], ""],
+        });
+
+        //hover line PALING ATAS
+        map.addLayer({
+          id: "desa-hover",
+          type: "line",
+          source: "desa",
+          paint: {
+            "line-color": "#ffff00",
+            "line-width": 3,
+          },
+          filter: ["==", ["get", "NAMOBJ"], ""],
+        });
+        // pastikan hover selalu paling atas
+        map.moveLayer("desa-hover");
+        map.moveLayer("desa-hover-fill");
+
+        bringDesaToFront();
+
+        if (map.getLayer("desa-label")) {
+          map.setLayoutProperty("desa-label", "visibility", "visible");
+        }
+
+        const topLayers = ["desa-fill", "desa-line", "desa-label"];
+
+        topLayers.forEach((id) => {
+          if (map.getLayer(id)) map.moveLayer(id);
+        });
+      });
+      function bringDesaToFront() {
+        if (!map || !map.isStyleLoaded()) return;
+
+        const layers = ["desa-fill", "desa-line", "desa-label"];
+
+        layers.forEach((id) => {
+          if (map.getLayer(id)) {
+            map.moveLayer(id);
+          }
+        });
+      }
+
+      // =====================
+      // LOOKER HELPER (FIX ENCODE)
+      // =====================
+
+      function normalize(val) {
+        return String(val || "")
+          .trim()
+          .replace(/\s+/g, " ");
+      }
+
+      function buildLookerParams(kec, desa) {
+        const sep = String.fromCharCode(0xe000); // ␀ Looker separator
+
+        const df8 = `include${sep}0${sep}IN${sep}${kec}`;
+        const df9 = `include${sep}0${sep}IN${sep}${desa}`;
+
+        return `df8=${encodeURIComponent(df8)}&df9=${encodeURIComponent(df9)}`;
+      }
+
+      // =====================
+      // POPUP AMAN (ANTI ERROR FIELD)
+      // =====================
+      function bukaDashboard(type, kec, desa) {
+        console.log("Dashboard request:", type, kec, desa);
+
+        // sementara: placeholder saja
+        alert("Dashboard: " + type + "\nKecamatan: " + kec + "\nDesa: " + desa);
+
+        // nanti di sini bisa diganti ke:
+        // window.location.href = "/dashboard/" + type;
+      }
+
+      function prettyText(text) {
+        if (!text) return "-";
+        return text
+          .replaceAll("_", " ")
+          .replace(/\b\w/g, (l) => l.toUpperCase());
+      }
+
+      map.on("click", "desa-fill", (e) => {
+        if (activeLayer === "risiko_multibahaya") return;
+        const p = e.features[0].properties;
+
+        const disaster = getDisasterFromLayer(activeLayer);
+        const f = buildFields(disaster);
+
+        const H = p?.[f?.H] ?? "-";
+        const V = p?.[f?.V] ?? "-";
+        const C = p?.[f?.C] ?? "-";
+        const R = p?.[f?.R] ?? "-";
+
+        const html = `
+      <div style="
+        font-family: 'Segoe UI', sans-serif;
+        min-width: 250px;
+        max-width: 300px;
+      ">
+
+        <!-- HEADER -->
+        <div style="
+          background: linear-gradient(135deg, #ff9800, #f57c00);
+          color: white;
+          padding: 10px 12px;
+          border-radius: 10px 10px 0 0;
+        ">
+          <div style="font-size:15px; font-weight:700;">
+            <b> Desa/Kelurahan ${p.NAMOBJ ?? "-"} </b>
+          </div>
+          <div style="font-size:13px; opacity:0.9;">
+           <b> Kecamatan ${p.WADMKC ?? "-"} </b>
+          </div>
+          <div style="font-size:12px; margin-top:3px; opacity:0.85;">
+            <b> Jenis Bencana: ${prettyText(disaster)} </b>
+          </div>
+        </div>
+
+        <!-- BODY -->
+        <div style="padding:10px 12px; background:white;">
+          <table style="width:100%; font-size:12px; border-collapse:collapse;">
+            <tr>
+              <td style="padding:4px 0;">Bahaya (H)</td>
+              <td style="text-align:right; font-weight:600;">${H}</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;">Kerentanan (V)</td>
+              <td style="text-align:right; font-weight:600;">${V}</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0;">Kapasitas (C)</td>
+              <td style="text-align:right; font-weight:600; color:#2e7d32;">${C}</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 0; font-weight:700;">Risiko (R)</td>
+              <td style="text-align:right; font-weight:800; color:#c62828;">${R}</td>
+            </tr>
+          </table>
+
+          <!-- INFO -->
+          <div style="
+            margin-top:10px;
+            font-size:11px;
+            color:#666;
+            line-height:1.4;
+          ">
+            Untuk melihat detail lengkap, klik salah satu dashboard di bawah ini, lalu pilih lokasi desa dan atau kecamatan pada dropdown.
+          </div>
+
+          <!-- BUTTON DASHBOARD -->
+          <div style="
+            margin-top:10px;
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:6px;
+          ">
+
+            <a href="https://datastudio.google.com/u/0/reporting/6948d2b5-c100-4d51-bbfc-99846a466d8f/page/z0psF" target="_blank" style="text-decoration:none;">
+              <div style="
+                background:#e53935;
+                color:white;
+                padding:7px;
+                font-size:11px;
+                text-align:center;
+                border-radius:6px;
+              ">
+                Dashboard Bahaya
+              </div>
+            </a>
+
+            <a href="https://datastudio.google.com/u/0/reporting/045c3b2a-4725-49a7-bdfc-13dbcc5c7777/page/DPssF" target="_blank" style="text-decoration:none;">
+              <div style="
+                background:#fb8c00;
+                color:white;
+                padding:7px;
+                font-size:11px;
+                text-align:center;
+                border-radius:6px;
+              ">
+                Dashboard Kerentanan
+              </div>
+            </a>
+
+            <a href="https://datastudio.google.com/u/0/reporting/f8d66afa-0bb6-45a5-ada8-c22b877c90da/page/pMTtF" target="_blank" style="text-decoration:none;">
+              <div style="
+                background:#43a047;
+                color:white;
+                padding:7px;
+                font-size:11px;
+                text-align:center;
+                border-radius:6px;
+              ">
+                Dashboard Kapasitas
+              </div>
+            </a>
+
+            <a href="https://datastudio.google.com/u/0/reporting/302057c8-61eb-4832-8aa4-4c094262a7be/page/tIRtF" target="_blank" style="text-decoration:none;">
+              <div style="
+                background:#8e24aa;
+                color:white;
+                padding:7px;
+                font-size:11px;
+                text-align:center;
+                border-radius:6px;
+              ">
+                Dashboard Risiko
+              </div>
+            </a>
+
+          </div>
+
+        </div>
+      </div>
+      `;
+
+        new maplibregl.Popup({
+          closeButton: true,
+          closeOnClick: true,
+          maxWidth: "320px",
+        })
+          .setLngLat(e.lngLat)
+          .setHTML(html)
+          .addTo(map);
+      });
+      let hoveredId = null;
+
+      map.on("mousemove", "desa-fill", (e) => {
+        if (e.features.length > 0) {
+          const nama = e.features[0].properties.NAMOBJ;
+
+          map.setFilter("desa-hover", ["==", ["get", "NAMOBJ"], nama]);
+          map.setFilter("desa-hover-fill", ["==", ["get", "NAMOBJ"], nama]);
+        }
+      });
+
+      map.on("mouseleave", "desa-fill", () => {
+        map.setFilter("desa-hover", ["==", ["get", "NAMOBJ"], ""]);
+        map.setFilter("desa-hover-fill", ["==", ["get", "NAMOBJ"], ""]);
+      });
+
+      // CURSOR POINTER
+      map.on("mouseenter", "desa-fill", () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+
+      map.on("mouseleave", "desa-fill", () => {
+        map.getCanvas().style.cursor = "default";
+      });
+
+      // KOORD
+      map.on("mousemove", (e) => {
+        document.getElementById("coord").innerHTML =
+          "Koordinat: " +
+          e.lngLat.lng.toFixed(5) +
+          ", " +
+          e.lngLat.lat.toFixed(5);
+      });
+
+      // MENU
+      function toggleMenu() {
+        let p = document.getElementById("layerPanel");
+        let legend = document.getElementById("legendBox");
+
+        const isOpen = p.style.display === "block";
+
+        if (isOpen) {
+          p.style.display = "none";
+          legend.style.display = "block";
+        } else {
+          p.style.display = "block";
+
+          // mobile: sembunyikan legenda
+          if (window.innerWidth <= 768) {
+            legend.style.display = "none";
+          }
+        }
+      }
+
+      // LEGEND DINAMIS
+      function updateLegend(layerId) {
+        let title = layerId.replaceAll("_", " ").toUpperCase();
+
+        let gradient;
+
+        if (layerId.includes("kapasitas")) {
+          gradient = "linear-gradient(to right,#ff0000,#ffff00,#00ff00)";
+        } else {
+          gradient = "linear-gradient(to right,#00ff00,#ffff00,#ff0000)";
+        }
+
+        let note = layerId.includes("kapasitas")
+          ? "Semakin hijau = semakin baik"
+          : "";
+
+        document.getElementById("legendBox").innerHTML = `
+    
+    <div class="legend-title">
+      ${title}
+    </div>
+
+    <div class="legend-gradient"
+      style="background:${gradient};">
+    </div>
+
+    <div class="legend-labels">
+      <span>Rendah</span>
+      <span>Sedang</span>
+      <span>
+        ${layerId.includes("kapasitas") ? "Baik" : "Tinggi"}
+      </span>
+    </div>
+
+    ${note ? `<div class="legend-note">${note}</div>` : ""}
+
+  `;
+      }
+
+      // LAYER
+      function setLayer(active) {
+        activeLayer = active;
+
+        const layers = map.getStyle().layers;
+
+        layers.forEach((l) => {
+          if (
+            l.id.startsWith("bahaya_") ||
+            l.id.startsWith("kerentanan_") ||
+            l.id.startsWith("kapasitas_") ||
+            l.id.startsWith("risiko_")
+          ) {
+            map.setLayoutProperty(
+              l.id,
+              "visibility",
+              l.id === active ? "visible" : "none",
+            );
+          }
+        });
+
+        updateLegend(active);
+        bringDesaToFront();
+
+        if (map.getLayer("desa-label")) {
+          map.setLayoutProperty("desa-label", "visibility");
+        }
+        if (active === "risiko_multibahaya") {
+          map.getCanvas().style.cursor = "default";
+        } else {
+          map.getCanvas().style.cursor = "pointer";
+        }
+      }
+
+      /// ===== MEASURE (JARAK + LUAS STABIL) =====
+      let measuring = false;
+      let coords = [];
+      let measurePopup = null;
+
+      // tombol aktif/nonaktif
+      function toggleMeasure() {
+        measuring = !measuring;
+        coords = [];
+
+        map.getCanvas().style.cursor = measuring ? "crosshair" : "";
+
+        // hapus layer & source
+        if (map.getLayer("measure")) map.removeLayer("measure");
+        if (map.getSource("measure")) map.removeSource("measure");
+
+        // hapus popup
+        if (measurePopup) {
+          measurePopup.remove();
+          measurePopup = null;
+        }
+      }
+
+      // klik titik
+      map.on("click", (e) => {
+        if (!measuring) return;
+
+        coords.push([e.lngLat.lng, e.lngLat.lat]);
+
+        if (coords.length > 1) {
+          updateMeasure();
+        }
+      });
+
+      // double click selesai
+      map.on("dblclick", (e) => {
+        if (!measuring) return;
+
+        e.preventDefault(); // cegah zoom
+        measuring = false;
+        map.getCanvas().style.cursor = "";
+      });
+
+      // fungsi utama
+      function updateMeasure() {
+        let isArea = coords.length > 2;
+        let geo, total;
+
+        // ===== JARAK =====
+        if (!isArea) {
+          geo = {
+            type: "Feature",
+            geometry: {
+              type: "LineString",
+              coordinates: coords,
+            },
+          };
+
+          total = 0;
+          for (let i = 1; i < coords.length; i++) {
+            total += distance(coords[i - 1], coords[i]);
+          }
+        }
+
+        // ===== LUAS =====
+        else {
+          geo = {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [[...coords, coords[0]]],
+            },
+          };
+
+          total = polygonArea(coords);
+        }
+
+        // ===== DRAW =====
+        if (!map.getSource("measure")) {
+          map.addSource("measure", {
+            type: "geojson",
+            data: geo,
+          });
+
+          map.addLayer({
+            id: "measure",
+            type: isArea ? "fill" : "line",
+            source: "measure",
+            paint: isArea
+              ? {
+                  "fill-color": "#1a73e8",
+                  "fill-opacity": 0.2,
+                }
+              : {
+                  "line-width": 3,
+                  "line-color": "#1a73e8",
+                },
+            layout: isArea
+              ? {}
+              : {
+                  "line-cap": "round",
+                  "line-join": "round",
+                },
+          });
+        } else {
+          map.getSource("measure").setData(geo);
+
+          // update tipe layer jika berubah line → polygon
+          if (map.getLayer("measure").type !== (isArea ? "fill" : "line")) {
+            map.removeLayer("measure");
+
+            map.addLayer({
+              id: "measure",
+              type: isArea ? "fill" : "line",
+              source: "measure",
+              paint: isArea
+                ? {
+                    "fill-color": "#1a73e8",
+                    "fill-opacity": 0.2,
+                  }
+                : {
+                    "line-width": 3,
+                    "line-color": "#1a73e8",
+                  },
+            });
+          }
+        }
+
+        // ===== POPUP =====
+        const lastPoint = coords[coords.length - 1];
+
+        if (measurePopup) measurePopup.remove();
+
+        measurePopup = new maplibregl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          offset: 15,
+        })
+          .setLngLat(lastPoint)
+          .setHTML(
+            `<div style="font-size:13px;font-weight:600;color:#000">
+                              ${isArea ? total.toFixed(2) + " km²" : total.toFixed(2) + " km"}
+                            </div>`,
+          )
+          .addTo(map);
+      }
+
+      // ===== HITUNG JARAK (HAVERSINE) =====
+      function distance(a, b) {
+        const R = 6371;
+
+        const dLat = ((b[1] - a[1]) * Math.PI) / 180;
+        const dLon = ((b[0] - a[0]) * Math.PI) / 180;
+
+        const lat1 = (a[1] * Math.PI) / 180;
+        const lat2 = (b[1] * Math.PI) / 180;
+
+        const x =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+
+        return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+      }
+
+      // ===== HITUNG LUAS (APPROX KM²) =====
+      function polygonArea(coords) {
+        let area = 0;
+
+        for (let i = 0; i < coords.length; i++) {
+          let j = (i + 1) % coords.length;
+
+          area += coords[i][0] * coords[j][1];
+          area -= coords[j][0] * coords[i][1];
+        }
+
+        return Math.abs(area / 2) * 111 * 111;
+      }
+      if (active === "risiko_multibahaya") {
+        map.getCanvas().style.cursor = "default";
+      } else {
+        map.getCanvas().style.cursor = "pointer";
+      }
+    </script>
+  </body>
+</html>
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGIS Siap Cegah</title>
+
+    <link href="images/bpbd_barsel.png" rel="icon" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link href="bootstrap.css" rel="stylesheet" />
+    <link href="font-awesome.css" rel="stylesheet" />
+    <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/pmtiles@3.0.5/dist/pmtiles.js"></script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      #map {
+        width: 100%;
+        height: calc(100vh - 56px);
+      }
+      .navbar {
+        z-index: 1003;
+      }
+
+      /* popup measurement */
+      .maplibregl-popup-content {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        padding: 6px 10px;
+        font-family: sans-serif;
+      }
+
+      /* ===== POPUP GLOBAL ===== */
+      .maplibregl-popup-content {
+        border-radius: 14px;
+        padding: 0;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      }
+
+      /* tombol close diperbesar */
+      .maplibregl-popup-close-button {
+        font-size: 16px;
+        width: 28px;
+        height: 28px;
+        line-height: 26px;
+
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: 0.2s;
+      }
+      .maplibregl-popup-close-button:hover {
+        background: #ff5252;
+        color: white;
+        transform: scale(1.1);
+      }
+
+      /* ===== HEADER ===== */
+      .popup-header {
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+        color: white;
+        padding: 10px;
+      }
+
+      .popup-title {
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .popup-sub {
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      /* ===== TABLE ===== */
+      .popup-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+
+      .popup-table td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .popup-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .popup-label {
+        font-weight: 500;
+      }
+
+      /* ===== BUTTON ===== */
+      .popup-btn {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: white;
+        display: inline-block;
+      }
+
+      /* warna kategori */
+      .btn-bahaya {
+        background: #e53935;
+      }
+      .btn-kerentanan {
+        background: #fb8c00;
+      }
+      .btn-kapasitas {
+        background: #43a047;
+      }
+      .btn-risiko {
+        background: #8e24aa;
+      }
+
+      .popup-btn:hover {
+        opacity: 0.85;
+      }
+
+      /* MENU */
+      #menuBtn {
+        position: absolute;
+        top: 70px;
+        right: 10px;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        z-index: 1002;
+        cursor: pointer;
+      }
+      .panel {
+        position: absolute;
+        top: 110px;
+        right: 10px;
+        background: white;
+        padding: 12px;
+        border-radius: 8px;
+        display: none;
+        z-index: 1001;
+        max-height: 75vh;
+        overflow-y: auto;
+        width: 260px;
+      }
+
+      .section-title {
+        font-weight: bold;
+        cursor: pointer;
+        background: #f1f1f1;
+        padding: 6px;
+        border-radius: 4px;
+      }
+      .section-content {
+        display: none;
+        margin-top: 5px;
+      }
+
+      /* MEASURE */
+      .measure-btn {
+        position: absolute;
+        bottom: 80px; /* pindah ke bawah */
+        left: 10px;
+        background: white;
+        padding: 8px;
+        border-radius: 6px;
+        z-index: 1002;
+        cursor: pointer;
+      }
+
+      /* LEGEND FIX */
       /* ===== LEGEND ===== */
       .legend {
         position: absolute;
